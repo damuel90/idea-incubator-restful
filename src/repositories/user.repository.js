@@ -1,5 +1,5 @@
 const BaseRepository = require('./base.repository');
-const _user =  null;
+let _user =  null;
 
 class UserRepository extends BaseRepository{
     constructor({ User }){

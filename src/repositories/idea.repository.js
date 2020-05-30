@@ -1,5 +1,5 @@
 const BaseRepository = require('./base.repository');
-const _idea =  null;
+let _idea =  null;
 
 class IdeaRepository extends BaseRepository{
     constructor({ Idea }){

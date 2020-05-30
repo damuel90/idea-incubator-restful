@@ -17,7 +17,7 @@ class IdeaService extends BaseService{
         return await _ideaRepository.getUserIdeas(author);
     }
 
-    async upVoteIdeas(ideaId){
+    async upVoteIdea(ideaId){
         if(!ideaId){
             const error = new Error();
             error.status = 400;
@@ -39,7 +39,7 @@ class IdeaService extends BaseService{
         return await _ideaRepository.update(ideaId, { upvotes: idea.upvotes });
     }
 
-    async downVoteIdeas(ideaId){
+    async downVoteIdea(ideaId){
         if(!ideaId){
             const error = new Error();
             error.status = 400;

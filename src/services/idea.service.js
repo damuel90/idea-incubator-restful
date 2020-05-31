@@ -1,4 +1,5 @@
 const BaseService = require('./base.service');
+const { ErrorHelper } = require('../helpers');
 let _ideaRepository = null;
 
 class IdeaService extends BaseService{
@@ -19,19 +20,13 @@ class IdeaService extends BaseService{
 
     async upVoteIdea(ideaId){
         if(!ideaId){
-            const error = new Error();
-            error.status = 400;
-            error.message = 'ideaId must be sent';
-            throw error;
+            throw new ErrorHelper(400, 'ideaId must be sent');
         }
 
         const idea = await _ideaRepository.get(ideaId);
         
         if(!idea){
-            const error = new Error();
-            error.status = 404;
-            error.message = 'idea does not exist';
-            throw error;
+            throw new ErrorHelper(404, 'idea does not exist');
         }
 
         idea.upvotes.push(true);
@@ -41,19 +36,13 @@ class IdeaService extends BaseService{
 
     async downVoteIdea(ideaId){
         if(!ideaId){
-            const error = new Error();
-            error.status = 400;
-            error.message = 'ideaId must be sent';
-            throw error;
+            throw new ErrorHelper(400, 'ideaId must be sent');
         }
 
         const idea = await _ideaRepository.get(ideaId);
         
         if(!idea){
-            const error = new Error();
-            error.status = 404;
-            error.message = 'idea does not exist';
-            throw error;
+            throw new ErrorHelper(404, 'idea does not exist');
         }
 
         idea.downvotes.push(true);

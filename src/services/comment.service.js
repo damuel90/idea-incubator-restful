@@ -1,4 +1,5 @@
 const BaseService = require('./base.service');
+const { ErrorHelper } = require('../helpers');
 let _commentRepository = null;
 let _ideaRepository = null;
 
@@ -11,19 +12,13 @@ class CommentService extends BaseService{
 
     async getIdeaComments(ideaId){
         if(!ideaId){
-            const error = new Error();
-            error.status = 400;
-            error.message = 'ideaId must be sent';
-            throw error;
+            throw new ErrorHelper(400, 'ideaId must be sent');
         }
 
         const idea = await _ideaRepository.get(ideaId);
         
         if(!idea){
-            const error = new Error();
-            error.status = 404;
-            error.message = 'idea does not exist';
-            throw error;
+            throw new ErrorHelper(404, 'idea does not exist');
         }
 
         const { comments } = idea;
@@ -33,19 +28,13 @@ class CommentService extends BaseService{
 
     async createComment(comment, ideaId){
         if(!ideaId){
-            const error = new Error();
-            error.status = 400;
-            error.message = 'ideaId must be sent';
-            throw error;
+            throw new ErrorHelper(400, 'ideaId must be sent');
         }
 
         const idea = await _ideaRepository.get(ideaId);
         
         if(!idea){
-            const error = new Error();
-            error.status = 404;
-            error.message = 'idea does not exist';
-            throw error;
+            throw new ErrorHelper(404, 'idea does not exist');
         }
 
         const createdComment = await _commentRepository.create(comment);

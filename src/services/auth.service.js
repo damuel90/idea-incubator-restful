@@ -1,25 +1,50 @@
 const { JwtHelper } = require('../helpers');
-const { ErrorHelper } = require('../helpers');
+const { ErrorHelper, IsEmailHelper } = require('../helpers');
 let _userService =  null;
 
 class AuthService{
     constructor({ UserService }){
-        _userService = UserService;
+        _userService = UserService;   
     }
 
     async signUp(user){
-        const { username } = user;
-        const userExist = await _userService.getUserByUsername(username);
-        if(userExist){
-            throw new ErrorHelper(401, 'User already exists');
+        let { username, email } = user;
+        username = username.toLocaleLowerCase();
+        email = email.toLocaleLowerCase();
+        const emailExist = await _userService.getUserByEmail(email);
+        if(emailExist){
+            throw new ErrorHelper(401, 'Email already exists');
         }
 
-        return await _userService.create(user);
+        const userExist = await _userService.getUserByUsername(username);
+        if(userExist){
+            throw new ErrorHelper(401, 'Username already exists');
+        }
+        
+        const createdUser = await _userService.create({ ...user, email, username });
+      
+        const userToEncode = {
+            email: createdUser.email,
+            username: createdUser.username,
+            avatar: createdUser.avatar,
+            userId: createdUser._id
+        }
+        const token = JwtHelper.generateToken(userToEncode);
+
+        return { ...userToEncode, token };
     }
 
     async signIn(user){
         const { username, password } = user;
-        const userExist = await _userService.getUserByUsername(username);
+        const isEmail = IsEmailHelper(username);
+
+        let userExist = null;
+        if(isEmail){
+            userExist = await _userService.getUserByEmail(username);
+        } else {
+            userExist = await _userService.getUserByUsername(username);
+        }
+       
         if(!userExist){
             throw new ErrorHelper(401, 'User does not exists');
         }
@@ -30,13 +55,14 @@ class AuthService{
         }
         
         const userToEncode = {
+            email: userExist.email,
             username: userExist.username,
-            id: userExist._id
+            avatar: userExist.avatar,
+            userId: userExist._id
         }
-        
         const token = JwtHelper.generateToken(userToEncode);
 
-        return { user: userExist, token };
+        return { ...userToEncode, token };
     }
 };
 

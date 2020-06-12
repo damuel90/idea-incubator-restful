@@ -1,5 +1,6 @@
 module.exports = {
     JwtHelper: require('./jwt.helper'),
     ErrorHelper: require('./error.helper'),
-    CacheTime: require('./cacheTime')
+    CacheTimeHelper: require('./cacheTime.helper'),
+    IsEmailHelper: require('./isEmail.helper')
 };

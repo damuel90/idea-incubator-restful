@@ -7,10 +7,11 @@ class BaseRepository{
         return await this.model.findById(id);
     }
 
-    async getAll(pageSize = 5, pageNum = 1){
+    async getAll(pageSize = 5, pageNum = 1, sort = 'createdAt'){
         const skips = pageSize * (pageNum - 1);
         return await this.model
             .find()
+            .sort(sort)
             .skip(skips)
             .limit(pageSize);
     }
@@ -24,8 +25,9 @@ class BaseRepository{
     }
 
     async delete(id){
-        await this.model.findByIdAndDelete(id);
-        return true;
+        const deleted = await this.model.findByIdAndDelete(id);
+        if(deleted) return true;
+        return false
     }
 };
 

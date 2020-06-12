@@ -2,20 +2,35 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { compareSync, genSaltSync, hashSync } = require('bcryptjs');
 
-const UserSchema = new Schema({
-    name: {
-        type: String,
-        required: true
+const UserSchema = new Schema(
+    {
+        email: {
+            type: String,
+            unique: true,
+            lowercase: true,
+            required: [true, '{PATH} is required.']
+        },
+        username: {
+            type: String,
+            unique: true,
+            lowercase: true,
+            required: [true, '{PATH} is required.']
+        },
+        password:{
+            type:String,
+            required: [true, '{PATH} is required.']
+        },
+        avatar:{
+            type:String
+        }
     },
-    username: {
-        type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
+    { 
+        timestamps: {
+            createdAt: true, 
+            updatedAt: true
+        }
     }
-});
+);
 
 UserSchema.methods.toJSON = function(){
     let user = this.toObject();

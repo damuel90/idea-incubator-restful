@@ -10,10 +10,7 @@ module.exports = (req, res, next) => {
 
     verify(token, JWT_SECRET, function(err, decodedToken){
         if(err){
-            const error = new Error();
-            error.status = 401,
-            error.message = 'Invalid token';
-            throw error;
+            throw new ErrorHelper(401, 'Invalid token');
         }
 
         req.user = decodedToken.user;

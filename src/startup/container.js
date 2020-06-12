@@ -9,40 +9,34 @@ const config = require('../config');
 const app = require('.');
 //services
 const { 
-    HomeService, 
     UserService, 
+    AuthService,
     IdeaService, 
-    CommentService,
-    AuthService 
+    FileService 
 } = require('../services');
 // controller
 const { 
-    HomeController, 
-    UserController, 
-    IdeaController, 
-    CommentController,
-    AuthController 
+    UserController,
+    AuthController, 
+    IdeaController    
 } = require('../controllers');
 // routes
 const Routes = require('../routes');
 const { 
-    HomeRoutes, 
     UserRoutes, 
-    IdeaRoutes, 
-    CommentRoutes,
-    AuthRoutes 
+    AuthRoutes,
+    IdeaRoutes    
 } = require('../routes/index.routes');
 // models
 const { 
     User, 
-    Idea, 
-    Comment 
+    Idea
 } = require('../models');
 // repositories
 const { 
     UserRepository, 
     IdeaRepository, 
-    CommentRepository 
+    FileRepository 
 } = require('../repositories');
 
 const container = createContainer();
@@ -54,35 +48,29 @@ container
         config: asValue(config)
     })
     .register({
-        HomeService: asClass(HomeService).singleton(),
-        UserService: asClass(UserService).singleton(),
-        IdeaService: asClass(IdeaService).singleton(),
-        CommentService: asClass(CommentService).singleton(),
-        AuthService: asClass(AuthService).singleton()
-    })
-    .register({
-        HomeController: asClass(HomeController.bind(HomeController)).singleton(),
-        UserController: asClass(UserController.bind(UserController)).singleton(),
-        IdeaController: asClass(IdeaController.bind(IdeaController)).singleton(),
-        CommentController: asClass(CommentController.bind(CommentController)).singleton(),
-        AuthController: asClass(AuthController.bind(AuthController)).singleton()
-    })
-    .register({
-        HomeRoutes: asFunction(HomeRoutes).singleton(),
         UserRoutes: asFunction(UserRoutes).singleton(),
-        IdeaRoutes: asFunction(IdeaRoutes).singleton(),
-        CommentRoutes: asFunction(CommentRoutes).singleton(),
-        AuthRoutes: asFunction(AuthRoutes).singleton()
+        AuthRoutes: asFunction(AuthRoutes).singleton(),
+        IdeaRoutes: asFunction(IdeaRoutes).singleton()       
     })
     .register({
-        User: asValue(User),
-        Idea: asValue(Idea),
-        Comment: asValue(Comment)
+        UserController: asClass(UserController.bind(UserController)).singleton(),
+        AuthController: asClass(AuthController.bind(AuthController)).singleton(),
+        IdeaController: asClass(IdeaController.bind(IdeaController)).singleton()
+    })
+    .register({
+        UserService: asClass(UserService).singleton(),
+        AuthService: asClass(AuthService).singleton(),
+        IdeaService: asClass(IdeaService).singleton(),
+        FileService: asClass(FileService).singleton()
     })
     .register({
         UserRepository: asClass(UserRepository).singleton(),
         IdeaRepository: asClass(IdeaRepository).singleton(),
-        CommentRepository: asClass(CommentRepository).singleton()
+        FileRepository: asClass(FileRepository).singleton()
+    })
+    .register({
+        User: asValue(User),
+        Idea: asValue(Idea),
     })
 
 module.exports = container;

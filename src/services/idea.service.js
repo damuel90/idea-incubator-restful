@@ -8,46 +8,98 @@ class IdeaService extends BaseService{
         _ideaRepository = IdeaRepository;
     }
 
-    async getUserIdeas(author){
-        if(!author){
-            const error = new Error();
-            error.status = 400;
-            error.message = 'userId must be sent';
-            throw error;
+    async getUserIdeas(userId){
+        if(!userId){
+            throw new ErrorHelper(400, 'ideaId must be sent');
         }
-        return await _ideaRepository.getUserIdeas(author);
+
+        return await _ideaRepository.getUserIdeas(userId);
     }
 
-    async upVoteIdea(ideaId){
+    async updateIdea(ideaId, userId, entity){
+        if(!ideaId){
+            throw new ErrorHelper(400, 'ideaId must be sent');
+        }
+        
+        if(!userId){
+            throw new ErrorHelper(400, 'userId must be sent');
+        }
+
+        return await _ideaRepository.updateIdea(ideaId, userId, entity);
+    }
+
+    async remove(ideaId, userId){
+        if(!ideaId){
+            throw new ErrorHelper(400, 'ideaId must be sent');
+        }
+        
+        if(!userId){
+            throw new ErrorHelper(400, 'userId must be sent');
+        }
+
+        return await _ideaRepository.remove(ideaId, userId);
+    }
+
+    async vote(ideaId, vote){
+        if(!ideaId){
+            throw new ErrorHelper(400, 'ideaId must be sent');
+        }
+        return await _ideaRepository.vote(ideaId, vote);
+    }
+
+    async updateVote(ideaId, userId, vote) {
         if(!ideaId){
             throw new ErrorHelper(400, 'ideaId must be sent');
         }
 
-        const idea = await _ideaRepository.get(ideaId);
-        
-        if(!idea){
-            throw new ErrorHelper(404, 'idea does not exist');
+        if(!userId){
+            throw new ErrorHelper(400, 'userId must be sent');
         }
 
-        idea.upvotes.push(true);
-
-        return await _ideaRepository.update(ideaId, { upvotes: idea.upvotes });
+        return await _ideaRepository.updateVote(ideaId, userId, vote);
     }
 
-    async downVoteIdea(ideaId){
+    async deleteVote(ideaId, userId) {
+        if(!ideaId){
+            throw new ErrorHelper(400, 'ideaId must be sent');
+        }
+        
+        if(!userId){
+            throw new ErrorHelper(400, 'userId must be sent');
+        }
+
+        return await _ideaRepository.deleteVote(ideaId, userId);
+    }
+
+    async comment(ideaId, entity){
+        if(!ideaId){
+            throw new ErrorHelper(400, 'ideaId must be sent');
+        }
+        return await _ideaRepository.comment(ideaId, entity);
+    }
+
+    async updateComment(ideaId, commentId, comment) {
         if(!ideaId){
             throw new ErrorHelper(400, 'ideaId must be sent');
         }
 
-        const idea = await _ideaRepository.get(ideaId);
-        
-        if(!idea){
-            throw new ErrorHelper(404, 'idea does not exist');
+        if(!commentId){
+            throw new ErrorHelper(400, 'commentId must be sent');
         }
 
-        idea.downvotes.push(true);
+        return await _ideaRepository.updateComment(ideaId, commentId, comment);
+    }
 
-        return await _ideaRepository.update(ideaId, { downvotes: idea.downvotes });
+    async deleteComment(ideaId, commentId) {
+        if(!ideaId){
+            throw new ErrorHelper(400, 'ideaId must be sent');
+        }
+        
+        if(!commentId){
+            throw new ErrorHelper(400, 'commentId must be sent');
+        }
+
+        return await _ideaRepository.deleteComment(ideaId, commentId);
     }
 };
 

@@ -1,33 +1,51 @@
 let _userService = null;
-
+let _fileService = null;
 class UserController{
-    constructor({ UserService }){
+    constructor({ UserService, FileService }){
         _userService = UserService;
+        _fileService = FileService;
     }
 
-    async get(req, res){
-        const { userId } = req.params;
-        const user = await _userService.get(userId);
-        return res.send(user);
+    async updateAvatar(req, res){
+        const { userId } = req.user;
+        const { file } = req;
+        let avatar = await _fileService.createFile(file); 
+        const updatedUser = await _userService.update(userId, { avatar });
+        if(!updatedUser) return res.status(500).send({
+            status: 500,
+            message: 'server error'
+        })
+        return res.status(201).send({
+            status: 201,
+            avatar
+        });
     }
 
-    async getAll(req, res){
-        const { pageSize, pageNum } = req.query;
-        const users = await _userService.getAll(pageSize, pageNum);
-        return res.send(users);
-    }
-
-    async update(req, res){
-        const { body } = req;
-        const { userId } = req.params;
-        const updatedUser = await _userService.update(userId, body);
-        return res.send(updatedUser);
+    async updateUsername(req, res){
+        const { userId } = req.user;
+        const { username } = req.query;
+        const updatedUser = await _userService.update(userId, { username });
+        if(!updatedUser) return res.status(500).send({
+            status: 500,
+            message: 'Server error'
+        })
+        return res.status(200).send({
+            status: 200,
+            message: 'Username successfully updated'
+        });
     }
 
     async delete(req, res){
-        const { userId } = req.params;
+        const { userId } = req.user;
         const deletedUser = await _userService.delete(userId);
-        return res.send(deletedUser);
+        if(!deletedUser) return res.status(200).send({
+            status: 200,
+            message: 'User does not exist or does not have the correct credentials'
+        })
+        return res.status(200).send({
+            status: 200,
+            message: 'User successfully deleted'
+        });
     }
 };
 
